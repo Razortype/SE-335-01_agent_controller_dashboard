@@ -15,7 +15,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/notes";
+  const from = location.state?.from?.pathname || "/dashboard";
   const [user, resetUser, userAttribs] = useInput("user", "");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -69,7 +69,7 @@ const LoginForm = () => {
 
   return (
     <>
-      {/* <div className="flex flex-col gap-4  w-[250px] sm:w-[320px]">
+      <div className="flex flex-col gap-4  w-[250px] sm:w-[320px]">
         <AuthInput
           inputAttribs={{
             id: "email",
@@ -95,7 +95,7 @@ const LoginForm = () => {
 
       <label
         htmlFor="persist"
-        className="flex items-center gap-3 cursor-pointer"
+        className="flex items-center gap-3 cursor-pointer text-text"
       >
         <div className="w-[14px] h-[14px] border-2 border-[#B6B6B6] rounded focus-within:border-none focus-within:outline-none transition">
           {check && <div className="w-full h-full bg-[#B6B6B6]"></div>}
@@ -110,7 +110,7 @@ const LoginForm = () => {
         />
       </label>
 
-      <Button onClick={handleLogin} loading={loading} text="Login" /> */}
+      <Button onClick={handleLogin} loading={loading} text="Login" />
     </>
   );
 };
