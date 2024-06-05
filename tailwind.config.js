@@ -8,12 +8,12 @@ export default {
     extend: {
       colors: {
         "text": "#FECFD7",
-        "background": "#0D0001",
-        "background2": "#1C0206",
+        "background": "#0A0A0A",
+        "background2": "#232323",
         "primary": "#fb6c81",
         "secondary": "#2a9f05",
-        "accent": "#1df969",
-        "blue": "#0019FF"
+        "accent": "#2978AD",
+        "blue": "#2978AD"
       }
     },
   },

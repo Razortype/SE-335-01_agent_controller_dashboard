@@ -49,7 +49,7 @@ function App() {
         </Routes>
 
         <ToastContainer toastStyle={{
-          backgroundColor: "#421582",
+          backgroundColor: "#000000",
           color:"white"
         }} />
 
