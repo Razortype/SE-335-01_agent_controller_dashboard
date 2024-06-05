@@ -100,7 +100,7 @@ const LoginForm = () => {
         <div className="w-[14px] h-[14px] border-2 border-[#B6B6B6] rounded focus-within:border-none focus-within:outline-none transition">
           {check && <div className="w-full h-full bg-[#B6B6B6]"></div>}
         </div>
-        <span className="text-grayUpdated text-xs sm:text-sm">Remember me</span>
+        <span className="text-[#8894AA] text-xs sm:text-sm">Remember me</span>
         <input
           type="checkbox"
           className="hidden"
