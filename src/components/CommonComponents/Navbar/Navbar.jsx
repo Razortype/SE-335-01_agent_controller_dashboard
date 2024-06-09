@@ -1,9 +1,13 @@
 import React from 'react'
 import { CiLogout } from "react-icons/ci";
 import useLogout from "../../../hooks/useLogout";
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const logout = useLogout();
+  const toDashboard = location.state?.from?.pathname || "/dashboard";
+  const navigate = useNavigate();
+
   return (
     <div className='text-text w-full px-5 sm:px-12 sm:py-10 py-3 flex items-end justify-between bg-transparent'>
       <h1 className='text-white text-xl sm:text-3xl font-bold'>CYBERTRON</h1>
@@ -11,8 +15,13 @@ const Navbar = () => {
       <div className='flex w-[230px] justify-between items-center'>
      
         <ul className='w-[150px] flex items-center justify-between'>
-          <li>Dashboard</li>
-          <li>Agents</li>
+          <button 
+          onClick={() => navigate(toDashboard, { replace: true })}
+          className='font-bold hover:text-white transition-all'
+          >
+            Dashboard
+          </button>
+          <li className='line-through text-text/70'>Agents</li>
         </ul>
 
         <button 
