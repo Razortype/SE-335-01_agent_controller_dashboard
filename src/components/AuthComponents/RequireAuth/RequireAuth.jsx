@@ -11,9 +11,6 @@ const RequireAuth = ({ allowedRoles }) => {
 
   const roles = decoded?.roles || [] ;
 
-  //roles.authority         
-  // "ADMIN"
-  console.log(roles.authority)
   return (
     roles.find(role => allowedRoles?.includes(role.authority))
     ? <Outlet />
