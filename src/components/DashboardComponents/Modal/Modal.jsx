@@ -19,7 +19,7 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
     const [ attackType, setAttackType ] = useState([]);
     const [loading, setLoading] = useState(false);
     const { auth } = useAuth();
-    const { agents } = useAgent();
+    const { agents, liveAgentMessage } = useAgent();
 
     const fetchEnum = async (typeName) => {
         const response = await axios.get(`/api/v1/enum/${typeName}`, {
@@ -54,6 +54,11 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
             setLoading(false);
             return toast.error("Please select an agent");
         }
+        if (!formData.agent_id && formData.agent_id === "Select An Agent") {
+            setLoading(false)
+            return toast.error("Please select an agent")
+        }
+
         if (!formData.attack_type && formData.attack_type === "Select Attack Type") {
             setLoading(false);
             return toast.error("Please select an attack type");
@@ -75,7 +80,7 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
                     },
                 }
             );
-            if (response.status === 201) {
+            if (response.status === 200) {
                 toast.success("Attack created successfully");
                 setIsChanged(true);
                 onClose();
@@ -100,7 +105,7 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
 
     return createPortal(
         <div className="fixed z-[10] top-0 left-0 w-full h-full bg-[rgba(0,0,0,.5)] overflow-hidden">
-          <div className="modal-container bg-background2 text-text rounded mx-auto my-[6%] p-[30px] py-5 w-[400px] relative flex flex-col gap-8">
+          <div className="modal-container bg-black text-text rounded mx-auto my-[6%] p-[30px] py-5 w-[400px] relative flex flex-col gap-8">
             
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-2xl">Create Attack</h2>
@@ -125,14 +130,21 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
               value={formData.attack_description}
               onChange={handleInputChange}
             />
-            <input 
-              type="number"
-              placeholder="Agent ID"
-              className="bg-transparent border border-text/60 rounded px-3 py-2 focus:outline-none" 
-              name="agent_id"
-              value={formData.agent_id}
-              onChange={handleInputChange}
-            />
+
+            <div className="relative">
+              <select
+                name = "agent_id"
+                id = "agent_id"
+                className="!bg-transparent cursor-pointer !border !border-text/60 rounded px-3 py-2 pr-12 focus:outline-none appearance-none -webkit-appearance-none w-full h-full"
+                value={formData.agent_id}
+                onChange={handleInputChange}
+              >
+                <option defaultValue>Select An Agent</option>
+                {liveAgentMessage?.payload?.agent_session_information.map((agent, index) => (
+                  <option key={index} value={agent.agent_id}>{agent.agent_email}</option>
+                ))}
+              </select>
+            </div>
             
             <div className="relative">
 
@@ -162,7 +174,7 @@ export default function Modal({ isOpen, onClose, setIsChanged }) {
 
             <button
               onClick={handleAttackSave}
-              className="w-full font-bold border rounded hover:text-black border-accent hover:bg-accent transition-all py-2 hover:"
+              className="w-full font-bold border rounded hover:text-pink hover:bg-light-pink transition-all py-2 hover:"
             >
               Create
             </button>

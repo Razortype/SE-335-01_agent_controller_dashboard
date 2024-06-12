@@ -6,7 +6,7 @@ const Button = ({ onClick, loading, text }) => {
       <button
         onClick={onClick}
         disabled={loading}
-        className="disabled:bg-gray-300 w-full font-semibold bg-accent text-white hover:bg-[#0019FF] transition py-2 text-sm sm:text-base rounded"
+        className="disabled:bg-gray-300 w-full font-semibold bg-accent text-white bg-pink hover:text-pink hover:bg-light-pink transition py-2 text-sm sm:text-base rounded"
       >
         {loading ? "Loading ..." : text}
       </button>

@@ -7,13 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        "text": "#FECFD7",
-        "background": "#0A0A0A",
-        "background2": "#232323",
-        "primary": "#fb6c81",
-        "secondary": "#2a9f05",
-        "accent": "#2978AD",
-        "blue": "#2978AD"
+        "text": "#fff",
+        "black": "#131313",
+        "pink": "#FE637A",
+        "light-pink": "#FAD7E1",
+        "light-blue": "#C8D8EE",
+        "light-green": "#FAEFCC"
       }
     },
   },

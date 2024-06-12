@@ -6,6 +6,7 @@ const AgentContext = createContext({});
 export const AgentProvider = ({ children }) => {
     const [agents, setAgents] = useState([]);
     const [liveAgentMessage, setLiveAgentMessage] = useState({});
+    const [matchedAgents, setMatchedAgents] = useState([]);
     const { auth } = useAuth();
 
     useEffect(() => {
@@ -50,7 +51,7 @@ export const AgentProvider = ({ children }) => {
       }, [auth.accessToken]);
 
     return (
-        <AgentContext.Provider value={{ agents, setAgents, liveAgentMessage, setLiveAgentMessage }}>
+        <AgentContext.Provider value={{ agents, setAgents, liveAgentMessage, setLiveAgentMessage, matchedAgents, setMatchedAgents }}>
             {children}
         </AgentContext.Provider>
     );

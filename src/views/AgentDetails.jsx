@@ -22,7 +22,7 @@ const AgentDetails = () => {
             setConnectedAgentInfo(connectedAgent);
         }
         
-    }, [liveAgentMessage, agentDetail]);
+    }, [liveAgentMessage]);
     
     const fetchAgentById = async (id) => {
         const response = await axios.get(`/api/v1/user/agent/${id}`, {
@@ -36,136 +36,96 @@ const AgentDetails = () => {
     useEffect(() => {
         fetchAgentById(id)
             .then((data) => setAgentDetail(data))
-            .catch((err) => console.error(err));  
+            .catch((err) => console.error(err));
     }, []);
 
     return ( 
-        <div className="text-text">
-            <h1 className = "text-xxl font-bold">Agent Details</h1>
-            {/*Content*/}
-            <div className = "p-8">
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold">Agent 1 information</h2>
-                    <p className="text-gray-400">This agent is curruntlry active</p>
-                    <div className="flex flex-col gap-2 p-2 m-2">
-                        <div className="bg-background2 p-2 round">
-                            {agentDetail ? JSON.stringify(agentDetail) : "No Agent Details"}
+        <>
+        
+        <div className='text-light-pink h-[90%]'>
+            <div className='mx-12 py-3 h-[100%] max-w'>
+
+                <div className='section w-[100%] '>
+                    
+                    <div className="grid grid-cols-12">
+
+                        <div className="col-span-5 overflow-auto">
+                            
+                            <div className="p-3 w-[100%]">
+
+                                <div className="flex flex-col gap-4">
+
+                                    <div className="flex flex-col">
+                                        <h1>Agent Info</h1>
+
+                                        <div>
+                                            <span>Agent Id</span>
+                                            <span>{agentDetail.user_id}</span>
+                                        </div>
+                                        <div>
+                                            <span>Firstname</span>
+                                            <span>{agentDetail.firstname}</span>
+                                        </div>
+                                        <div>
+                                            <span>Lastname</span>
+                                            <span>{agentDetail.lastname}</span>
+                                        </div>
+                                        <div>
+                                            <span>Email</span>
+                                            <span>{agentDetail.email}</span>
+                                        </div>
+                                        <div>
+                                            <span>Created At</span>
+                                            <span>{agentDetail.created_at}</span>
+                                        </div>
+
+                                    </div>
+
+
+                                    {connectedAgentInfo &&
+                                    
+                                    <div className="flex flex-col gap-4 mt-5">
+                                        <h1>Socket Info</h1>
+
+                                        <div>
+                                            <span>Address</span>
+                                            <span>{connectedAgentInfo.address}</span>
+                                        </div>
+                                        <div>
+                                            <span>Session ID</span>
+                                            <span>{connectedAgentInfo.session_id}</span>
+                                        </div>
+                                        <div>
+                                            <span>Agent Status</span>
+                                            <span>{connectedAgentInfo.agent_status}</span>
+                                        </div>
+                                        <div>
+                                            <span>Using Token</span>
+                                            <span>{connectedAgentInfo.using_token}</span>
+                                        </div>
+
+                                    </div>
+
+                                    } 
+
+                                </div>
+
+                            </div>
+                            
                         </div>
-                        <div className="bg-background2 p-2 round">
-                            {connectedAgentInfo ? JSON.stringify(connectedAgentInfo) : "No Connected Agent Info"}
-                        </div>
+                        
+                        
+                        <div className="col-span-7">test</div>
+
                     </div>
+                    
                 </div>
-            </div>
-            {/*Attack table*/}
-            <div className="max-w-6xl mx-auto">
-                <div className="flex flex-col">
-                    <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" className="p-4">
-                                            {/*<div className="flex items-center">
-                                                <input id="checkbox-all" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />*
-                                                <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
-                                            </div>*/}
-                                        </th>
-                                        <th scope="col" className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            First name
-                                        </th>
-                                        <th scope="col" className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Last name
-                                        </th>
-                                        <th scope="col" className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Email address
-                                        </th>
-                                        <th scope="col" className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Agent
-                                        </th>
-                                        <th scope="col" className="p-4">
-                                            <span className="sr-only">More detail</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td className="p-4 w-4">
-                                            <div className="flex items-center">
-                                                {/*<input id="checkbox-table-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />*/}
-                                                <label htmlFor="checkbox-table-1" className="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Imac 27"</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Desktop PC</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$1999</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                            <a href="#" className="text-blue-600 dark:text-blue-500 hover:underline">More detail</a>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td className="p-4 w-4">
-                                            <div className="flex items-center">
-                                                {/*<input id="checkbox-table-2" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />*/}
-                                                <label htmlFor="checkbox-table-2" className="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple MacBook Pro 17"</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Laptop</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$2999</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                            <a href="#" className="text-blue-600 dark:text-blue-500 hover:underline">More detail</a>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td className="p-4 w-4">
-                                            <div className="flex items-center">
-                                                {/*<input id="checkbox-table-3" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />*/}
-                                                <label htmlFor="checkbox-table-3" className="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">iPhone 13 Pro</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Phone</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$999</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                            <a href="#" className="text-blue-600 dark:text-blue-500 hover:underline">More detail</a>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td className="p-4 w-4">
-                                            <div className="flex items-center">
-                                                {/*<input id="checkbox-table-4" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" >*/}
-                                                <label htmlFor="checkbox-table-4" className="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Magic Mouse 2</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Accessories</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$99</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                            <a href="#" className="text-blue-600 dark:text-blue-500 hover:underline">More detail</a>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td className="p-4 w-4">
-                                            <div className="flex items-center">
-                                                {/*<input id="checkbox-table-5" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />*/}
-                                                <label htmlFor="checkbox-table-5" className="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple Watch Series 7</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">Accessories</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">$599</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                            <a href="#" className="text-blue-600 dark:text-blue-500 hover:underline">More detail</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+
+
             </div>
         </div>
+        
+        </>
     );
 }
 

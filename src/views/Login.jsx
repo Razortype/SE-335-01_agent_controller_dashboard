@@ -10,7 +10,7 @@ const Login = () => {
       </div>
       <LoginForm/>
       <div className="flex items-center justify-center text-gray-500 font-light text-xs sm:text-sm">
-        Manager / Admin access only
+        Manager / Admin <span className="font-bold px-1 text-light-pink/60">ONLY</span> Dashboard
       </div>
     </>
   );
