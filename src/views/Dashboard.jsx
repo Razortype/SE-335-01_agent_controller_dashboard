@@ -6,6 +6,7 @@ import ReactTimeAgo from 'react-time-ago';
 import { Tooltip } from 'react-tooltip'
 import Modal from '../components/DashboardComponents/Modal/Modal';
 import AgentCard from '../components/AgentComponents/AgentCard/AgentCard';
+import AttackCard from '../components/AgentComponents/AttackCard/AttackCard';
 
 
 const Dashboard = () => {
@@ -22,6 +23,10 @@ const Dashboard = () => {
         failPercentage: "%N/A"
     });
     const [matchedAgents, setMatchedAgents] = useState([]);
+    const [attacks, setAttacks] = useState({
+        today: [],
+        yesterday: []
+    });
     const {auth} = useAuth();
 
     const fetchAgents = async () => {
@@ -33,15 +38,29 @@ const Dashboard = () => {
         return agentResponse.data.data;
     };
 
+    const fetchDashBoardAttack = async () => {
+        const attackResponse = await axios.get('/api/v1/attack-job/dashboard', {
+            headers: {
+                Authorization: `Bearer ${auth.accessToken}`
+            }
+        });
+        return attackResponse.data.data;
+    };
+
     useEffect(() => {
         fetchAgents()
             .then((data) => setAgents(data))
-            .catch((err) => console.error(err));     
+            .catch((err) => console.error(err));
+
+        fetchDashBoardAttack()
+            .then((data) => setAttacks(data))
+            .catch((err) => console.error(err));
+
     } , []);
 
     useEffect(() => {
         if (liveAgentMessage.payload) {
-            const connectedAgentAmount = liveAgentMessage.payload.agent_session_information.length;
+            const connectedAgentAmount = liveAgentMessage?.payload?.agent_session_information?.length;
             const failPercentage = agents.reduce((acc, agent) => {
                 const successAttacks = agent.attacks.filter(attack => !attack.crashed).length;
                 const totalAttacks = agent.attacks.length;
@@ -64,13 +83,15 @@ const Dashboard = () => {
                 failPercentage: `${failPercentage * 100}%`
             });
 
+            console.log(attacks);
+
         }
     }, [liveAgentMessage]);
 
     function getConnectedAgentById(id) { 
       
         var connectedAgent = null;
-        liveAgentMessage.payload.agent_session_information.forEach((agent) => {
+        liveAgentMessage.payload?.agent_session_information.forEach((agent) => {
             if (agent.agent_id === id) {
                 connectedAgent = agent;
             }
@@ -145,6 +166,7 @@ const Dashboard = () => {
                             <h1 className='ml-1 text-[1.3em]'>
                                 <span className='text-gray-500/85'>Dis</span>
                                 <span className='font-extrabold'>Connected</span>
+                                &nbsp;
                                 <span className='font-ligth'>Agents</span>
                             </h1>
                             {/* connected and disconnected agent information */}
@@ -165,6 +187,38 @@ const Dashboard = () => {
                         <div className='bg-red-yellow col-span-4'>
                             <h1 className='ml-1 text-[1.3em] text-black font-semibold inline-block bg-light-pink px-2 rounded'>Attack History</h1>
                             {/* previos attack executed today and yesterday */}
+                            
+                            <div className='flex flex-col mt-2'>
+
+                                {attacks.today && 
+                                    <div className='ml-1'>
+                                        <h3 className='text-sm text-light-green/70 italic'>today</h3>
+
+                                        <div>
+                                            {attacks.today.slice(0, 1).map((attack, index) => (
+                                                <AttackCard key={index} attack={attack} />
+                                            ))}
+
+                                        </div>
+
+                                    </div>
+                                }
+
+                                { attacks.yesterday &&
+                                    <div className='ml-1 mt-1'>
+                                        <h3 className='text-sm text-light-green/70 italic'>yesterday</h3>
+
+                                        <div>
+                                            {attacks.yesterday.slice(0, 1).map((attack, index) => (
+                                                <AttackCard key={index} attack={attack} />
+                                            ))}
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+                            
 
                         </div>
                         

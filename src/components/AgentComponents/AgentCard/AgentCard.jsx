@@ -53,21 +53,21 @@ const AgentCard = ({ agent, matched }) => {
                         
                         <span className="flex flex-col text-light-clue gap-1">
                             <span>
-                                <span className="font-bold">Email:</span> {agent.email}
+                                <span className="font-bold text-white/50">Email:</span> {agent.email}
                             </span>
                             <span>
-                                <span className="font-bold">Full Name*:</span> {agent.firstname} {agent.lastname}
+                                <span className="font-bold text-white/50">Full Name*:</span> {agent.firstname} {agent.lastname}
                             </span>
 
                             {matched !== null && 
                                 <>
                                     <span className="flex gap-1 items-center">
-                                        <span className="font-bold">Status:</span> {matched.agent_status} {statusIcon[matched.agent_status]} <span className="text-[8px]">{matched?.executing_attack ? <>[{matched?.executing_attack?.attack_type}]</> : ""}</span>
+                                        <span className="font-bold text-white/50">Status:</span> {matched.agent_status} {statusIcon[matched.agent_status]} <span className="text-[8px]">{matched?.executing_attack ? <>[{matched?.executing_attack?.attack_type}]</> : ""}</span>
                                     </span>
                                     <span>
-                                        <span className="font-bold">Address (IP):</span> {matched.address}
+                                        <span className="font-bold text-white/50">Address (IP):</span> {matched.address}
                                     </span>
-                                    <span className="mt-1">
+                                    <span className="mt-3">
                                         {matched?.execution_history?.length <= 0  ?
                                             <span className="text-sm bg-pink p-2 text-black font-bold rounded">No History</span>
                                             : 
